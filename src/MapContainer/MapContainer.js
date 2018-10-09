@@ -3,13 +3,14 @@ import ReactMapboxGl, { Layer, Feature, ZoomControl, Popup } from "react-mapbox-
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './MapContainer.css';
 
-const Map = ReactMapboxGl({
-    accessToken: "pk.eyJ1Ijoiam9uLWhlciIsImEiOiJjam12MjF5OHMwZGJyM3BydXRsbWg5eTNvIn0.p_VMyUydJ5Ke6610cboLVw",
-    attributionControl: false,
-});
 
 class MapContainer extends Component {
-    render() {
+    render() { 
+        let Map = ReactMapboxGl({
+            accessToken: process.env.REACT_APP_MAPBOX_KEY,
+            attributionControl: false,
+        });
+
         return (
             <div className="MapContainer">
                 <Map
