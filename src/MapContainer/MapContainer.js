@@ -15,24 +15,22 @@ class MapContainer extends Component {
         };
     }
 
-    componentDidMount() {
-        this.fetchNextGenPartners();
+    handlePartnersChanged = (entryList) => {
+        this.setState({
+            nextGenPartners: entryList,
+        });
     }
 
-    fetchNextGenPartners() {
-
-    }
-
-    render() { 
+    render() {
         return (
             <Container className="MapContainer">
                 <Row>
                     <Col xs="3">
                         <Row>
-                            <InfoCard />
+                            <HeaderCard callbackEntriesUpdated={ this.handlePartnersChanged } />
                         </Row>
                         <Row>
-                            <HeaderCard />
+                            <InfoCard />
                         </Row>
                     </Col>
                     <Col xs="9">
