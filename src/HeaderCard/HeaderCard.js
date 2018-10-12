@@ -23,14 +23,15 @@ class HeaderCard extends Component {
         reader.readAsArrayBuffer(files[0]);
     }
 
-    updateEntries = (rawXlsTable) => {
+    updateEntries = async (rawXlsTable) => {
         this.setState({
             isLoading: true,
         });
         let parsedTable = this.parseXlsTable(rawXlsTable);
-        console.log(parsedTable[7]);
+        //parsedTable = parsedTable.slice(0, 20);
         let filteredTable = this.filterTransform(parsedTable);
-        this.props.callbackEntriesUpdated(filteredTable);
+        let tableWithLocations = await this.fetchAllLocations(filteredTable);
+        this.props.callbackEntriesUpdated(tableWithLocations);
         this.setState({
             isLoading: false,
         });
@@ -79,26 +80,32 @@ class HeaderCard extends Component {
     fetchAllLocations = async (entries) => {
         let entries_w_location = [];
         for(let entry of entries) {
-            entry.coordinates = await this.fetchLocation(entry.Name + " " + entry.City, );
+            let coordinates = await this.fetchLocation(entry.name + " " + entry.city);
+            entry.long = coordinates[0];
+            entry.lat = coordinates[1];
             entries_w_location = entries_w_location.concat(entry);
             // await next request for rate limit reasons
-            await sleep(200);
+            await sleep(50);
         };
 
         return entries_w_location;
     }
 
     fetchLocation = async (searchText) => {
-        console.log(searchText.replace(/\W+/g, " "));
         let response = await fetch(
             "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
-            searchText.replace(/\W+/g, " ") +
+            searchText.replace(/\(.*?\)|\)|\(|\/|\./g, " ") +
             ".json?limit=1&access_token=" +
             process.env.REACT_APP_MAPBOX_KEY
         );
         let data = await response.json();
 
-        return data.features[0].geometry.coordinates;
+        try {
+            return data.features[0].geometry.coordinates;
+        } catch (e) {
+            console.log("ERROR: " + searchText);
+            return [0, 0];
+        }
     }
 
     render() { 

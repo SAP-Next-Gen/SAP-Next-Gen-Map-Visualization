@@ -3,7 +3,6 @@ import { Container, Row, Col } from "reactstrap";
 import InfoCard from "../InfoCard/InfoCard";
 import HeaderCard from "../HeaderCard/HeaderCard";
 import MapCard from "../MapCard/MapCard";
-import './MapContainer.css';
 
 
 class MapContainer extends Component {
@@ -21,6 +20,10 @@ class MapContainer extends Component {
         });
     }
 
+    handleSelectedPartnerChanged = (entryID) => {
+        return
+    }
+
     render() {
         return (
             <Container className="MapContainer">
@@ -34,7 +37,10 @@ class MapContainer extends Component {
                         </Row>
                     </Col>
                     <Col xs="9">
-                        <MapCard />
+                        <MapCard
+                            callbackSelectedEntryUpdated={ this.handleSelectedPartnerChanged }
+                            mapMarkers={ this.state.nextGenPartners }
+                        />
                     </Col>
                 </Row>
             </Container>
